@@ -5,7 +5,10 @@
 [![CI](https://github.com/angristan/codex-wakatime/actions/workflows/workflow.yml/badge.svg)](https://github.com/angristan/codex-wakatime/actions/workflows/workflow.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-WakaTime integration for [OpenAI Codex CLI](https://github.com/openai/codex) - Track AI coding activity and time spent.
+WakaTime integration for [OpenAI Codex CLI](https://github.com/openai/codex). Track AI coding activity and time spent.
+
+> [!TIP]
+> Also check out [opencode-wakatime](https://github.com/angristan/opencode-wakatime) for OpenCode!
 
 ## Features
 
