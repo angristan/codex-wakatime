@@ -145,7 +145,9 @@ function normalizeNotifyValue(value: unknown): unknown[] {
 }
 
 function hasNotifyEntry(entries: unknown[], command: string): boolean {
-  return entries.some((entry) => typeof entry === "string" && entry === command);
+  return entries.some(
+    (entry) => typeof entry === "string" && entry === command,
+  );
 }
 
 function removeNotifyEntry(entries: unknown[], command: string): unknown[] {

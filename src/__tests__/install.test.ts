@@ -67,9 +67,7 @@ describe("install", () => {
 
   it("removes notify when codex-wakatime is the only entry", () => {
     vi.mocked(fs.existsSync).mockReturnValue(true);
-    vi.mocked(fs.readFileSync).mockReturnValue(
-      'notify = ["codex-wakatime"]\n',
-    );
+    vi.mocked(fs.readFileSync).mockReturnValue('notify = ["codex-wakatime"]\n');
 
     uninstallHook();
 
