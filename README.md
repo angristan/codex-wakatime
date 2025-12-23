@@ -1,5 +1,10 @@
 # codex-wakatime
 
+[![npm version](https://img.shields.io/npm/v/codex-wakatime)](https://www.npmjs.com/package/codex-wakatime)
+[![npm downloads](https://img.shields.io/npm/dm/codex-wakatime)](https://www.npmjs.com/package/codex-wakatime)
+[![CI](https://github.com/angristan/codex-wakatime/actions/workflows/workflow.yml/badge.svg)](https://github.com/angristan/codex-wakatime/actions/workflows/workflow.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
 WakaTime integration for [OpenAI Codex CLI](https://github.com/openai/codex) - Track AI coding activity and time spent.
 
 ## Features
