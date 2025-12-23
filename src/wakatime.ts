@@ -1,9 +1,11 @@
 import { type ExecFileOptions, execFile } from "node:child_process";
 import * as os from "node:os";
+import pkg from "../package.json" with { type: "json" };
 import { dependencies } from "./dependencies.js";
 import { logger } from "./logger.js";
 import type { HeartbeatParams } from "./types.js";
-import { VERSION } from "./version.js";
+
+const VERSION = pkg.version;
 
 export function isWindows(): boolean {
   return os.platform() === "win32";
