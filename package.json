@@ -40,10 +40,13 @@
   "license": "MIT",
   "devDependencies": {
     "@biomejs/biome": "^2.3.10",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
     "@types/node": "^22.0.0",
     "@types/which": "^3.0.0",
     "@vitest/coverage-v8": "^4.0.16",
     "esbuild": "^0.25.0",
+    "semantic-release": "^25.0.2",
     "typescript": "^5.0.0",
     "vitest": "^4.0.16"
   },
