@@ -38,3 +38,11 @@ export interface CliState {
   lastChecked?: number;
   version?: string;
 }
+
+/**
+ * Extracted file with write detection
+ */
+export interface ExtractedFile {
+  path: string;
+  isWrite: boolean;
+}

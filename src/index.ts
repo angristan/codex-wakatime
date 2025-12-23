@@ -1,5 +1,5 @@
 import * as path from "node:path";
-import { extractFilePaths } from "./extractor.js";
+import { extractFiles } from "./extractor.js";
 import { installHook, uninstallHook } from "./install.js";
 import { LogLevel, logger } from "./logger.js";
 import { isDebugEnabled } from "./options.js";
@@ -86,19 +86,22 @@ async function main(): Promise<void> {
   // Extract file paths from assistant message
   const assistantMessage = notification["last-assistant-message"] ?? "";
   const cwd = notification.cwd;
-  const files = extractFilePaths(assistantMessage, cwd);
+  const files = extractFiles(assistantMessage, cwd);
 
   logger.debug(`Extracted ${files.length} files from message`);
 
   if (files.length > 0) {
     // Send per-file heartbeats
     for (const file of files) {
-      logger.debug(`Sending heartbeat for file: ${file}`);
+      logger.debug(
+        `Sending heartbeat for file: ${file.path} (isWrite: ${file.isWrite})`,
+      );
       sendHeartbeat({
-        entity: file,
+        entity: file.path,
         entityType: "file",
         category: "ai coding",
         projectFolder: cwd,
+        isWrite: file.isWrite,
       });
     }
   } else {
