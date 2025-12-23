@@ -5,7 +5,7 @@
   "description": "WakaTime plugin for OpenAI Codex CLI - Track AI coding activity and time spent",
   "repository": {
     "type": "git",
-    "url": "https://github.com/wakatime/codex-wakatime.git"
+    "url": "https://github.com/angristan/codex-wakatime.git"
   },
   "type": "module",
   "main": "dist/index.cjs",

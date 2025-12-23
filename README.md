@@ -114,7 +114,7 @@ Logs are written to `~/.wakatime/codex.log`.
 
 ```bash
 # Clone the repository
-git clone https://github.com/wakatime/codex-wakatime
+git clone https://github.com/angristan/codex-wakatime
 cd codex-wakatime
 
 # Install dependencies
@@ -148,8 +148,6 @@ codex-wakatime/
 │   ├── options.ts        # Config parsing
 │   ├── types.ts          # TypeScript interfaces
 │   └── __tests__/        # Test files
-├── scripts/
-│   └── generate-version.js
 ├── package.json
 ├── tsconfig.json
 └── biome.json
