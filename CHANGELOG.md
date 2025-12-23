@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/angristan/codex-wakatime/compare/v1.0.0...v1.0.1) (2025-12-23)
+
+
+### Bug Fixes
+
+* use correct verb forms in file path extraction patterns ([a597bb5](https://github.com/angristan/codex-wakatime/commit/a597bb5b5c9ac4e59d3c7ea5201f70227929833f))
+
 # 1.0.0 (2025-12-23)
 
 
