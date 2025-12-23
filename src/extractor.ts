@@ -10,8 +10,8 @@ const PATTERNS = [
   // Backtick paths with extension: `src/foo/bar.ts`
   /`([^`\s]+\.\w{1,6})`/g,
 
-  // Action patterns: Created/Modified/Updated/Wrote/Edited/Deleted file.ts
-  /(?:Created|Modified|Updated|Wrote|Edited|Deleted|Reading|Writing)\s+`?([^\s`\n]+\.\w{1,6})`?/gi,
+  // Action patterns: Read/List/Created/Modified/Updated/Wrote/Edited/Deleted file.ts
+  /(?:Read|List|Create|Created|Modify|Modified|Update|Updated|Write|Wrote|Edit|Edited|Delete|Deleted)\s+`?([^\s`\n]+\.\w{1,6})`?/gi,
 
   // File path in quotes: "src/file.ts" or 'src/file.ts'
   /["']([^"'\s]+\.\w{1,6})["']/g,
