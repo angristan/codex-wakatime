@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/angristan/codex-wakatime/compare/v1.0.1...v1.1.0) (2025-12-23)
+
+
+### Features
+
+* add read vs write detection for heartbeats ([e6abce0](https://github.com/angristan/codex-wakatime/commit/e6abce0d18023e383210b1b9ef9759750ee26a0b))
+
 ## [1.0.1](https://github.com/angristan/codex-wakatime/compare/v1.0.0...v1.0.1) (2025-12-23)
 
 
