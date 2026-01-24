@@ -39,6 +39,8 @@ codex-wakatime --install
 ```
 
 This adds `notify = ["codex-wakatime"]` to your `~/.codex/config.toml`.
+If you already have a `notify` command configured, codex-wakatime replaces it
+because Codex supports a single notify command.
 
 ## How It Works
 

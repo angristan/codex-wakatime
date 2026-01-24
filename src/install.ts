@@ -138,22 +138,15 @@ function formatTomlValue(value: unknown): string {
   return String(value);
 }
 
-function normalizeNotifyValue(value: unknown): unknown[] {
-  if (Array.isArray(value)) return value.slice();
-  if (typeof value === "string") return [value];
-  return [];
-}
-
-function hasNotifyEntry(entries: unknown[], command: string): boolean {
-  return entries.some(
-    (entry) => typeof entry === "string" && entry === command,
-  );
-}
-
-function removeNotifyEntry(entries: unknown[], command: string): unknown[] {
-  return entries.filter(
-    (entry) => !(typeof entry === "string" && entry === command),
-  );
+function normalizeNotifyCommand(value: unknown): string[] | undefined {
+  if (Array.isArray(value)) {
+    const entries = value.filter(
+      (entry): entry is string => typeof entry === "string" && entry.length > 0,
+    );
+    return entries.length > 0 ? entries : undefined;
+  }
+  if (typeof value === "string" && value.length > 0) return [value];
+  return undefined;
 }
 
 /**
@@ -193,14 +186,20 @@ export function installHook(): void {
   const pluginCommand = getPluginCommand()[0];
 
   // Check if already installed
-  const existingNotify = normalizeNotifyValue(config.notify);
-  if (hasNotifyEntry(existingNotify, pluginCommand)) {
+  const existingNotify = normalizeNotifyCommand(config.notify);
+  if (existingNotify?.[0] === pluginCommand) {
     console.log("codex-wakatime is already configured");
     return;
   }
 
-  // Set the notify command
-  config.notify = [...existingNotify, pluginCommand];
+  if (existingNotify && existingNotify.length > 0) {
+    console.warn(
+      "Existing Codex notify command found; replacing with codex-wakatime",
+    );
+  }
+
+  // Set the notify command (Codex supports a single command argv)
+  config.notify = [pluginCommand];
 
   // Write the config
   const newContent = stringifyToml(config);
@@ -230,18 +229,13 @@ export function uninstallHook(): void {
     const config = parseToml(content);
 
     const pluginCommand = getPluginCommand()[0];
-    const existingNotify = normalizeNotifyValue(config.notify);
-    if (!hasNotifyEntry(existingNotify, pluginCommand)) {
+    const existingNotify = normalizeNotifyCommand(config.notify);
+    if (!existingNotify || existingNotify[0] !== pluginCommand) {
       console.log("codex-wakatime was not configured");
       return;
     }
 
-    const updatedNotify = removeNotifyEntry(existingNotify, pluginCommand);
-    if (updatedNotify.length === 0) {
-      delete config.notify;
-    } else {
-      config.notify = updatedNotify;
-    }
+    delete config.notify;
 
     const newContent = stringifyToml(config);
     fs.writeFileSync(CODEX_CONFIG_PATH, newContent);

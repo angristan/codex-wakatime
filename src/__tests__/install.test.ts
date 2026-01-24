@@ -26,7 +26,7 @@ describe("install", () => {
     vi.restoreAllMocks();
   });
 
-  it("appends codex-wakatime to existing notify entries", () => {
+  it("replaces existing notify command with codex-wakatime", () => {
     vi.mocked(fs.existsSync).mockReturnValue(true);
     vi.mocked(fs.readFileSync).mockReturnValue(
       'notify = ["hook-a", "hook-b"]\n',
@@ -34,38 +34,21 @@ describe("install", () => {
 
     installHook();
 
-    expect(fs.writeFileSync).toHaveBeenCalledWith(
-      CONFIG_PATH,
-      expect.stringContaining(
-        'notify = ["hook-a", "hook-b", "codex-wakatime"]',
-      ),
-    );
+    const written = vi.mocked(fs.writeFileSync).mock.calls[0]?.[1] as string;
+    expect(written).toContain('notify = ["codex-wakatime"]');
+    expect(written).not.toContain("hook-a");
   });
 
   it("does not overwrite when codex-wakatime is already configured", () => {
     vi.mocked(fs.existsSync).mockReturnValue(true);
-    vi.mocked(fs.readFileSync).mockReturnValue(
-      'notify = ["hook-a", "codex-wakatime"]\n',
-    );
+    vi.mocked(fs.readFileSync).mockReturnValue('notify = ["codex-wakatime"]\n');
 
     installHook();
 
     expect(fs.writeFileSync).not.toHaveBeenCalled();
   });
 
-  it("removes codex-wakatime and preserves other notify entries", () => {
-    vi.mocked(fs.existsSync).mockReturnValue(true);
-    vi.mocked(fs.readFileSync).mockReturnValue(
-      'notify = ["codex-wakatime", "hook-a"]\n',
-    );
-
-    uninstallHook();
-
-    const written = vi.mocked(fs.writeFileSync).mock.calls[0]?.[1] as string;
-    expect(written).toContain('notify = ["hook-a"]');
-  });
-
-  it("removes notify when codex-wakatime is the only entry", () => {
+  it("removes notify when codex-wakatime is configured", () => {
     vi.mocked(fs.existsSync).mockReturnValue(true);
     vi.mocked(fs.readFileSync).mockReturnValue('notify = ["codex-wakatime"]\n');
 
