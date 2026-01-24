@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/angristan/codex-wakatime/compare/v1.1.0...v1.1.1) (2026-01-24)
+
+
+### Bug Fixes
+
+* correct notify hook install ([13a0db3](https://github.com/angristan/codex-wakatime/commit/13a0db313871772f7a1d9f68fc332e7e800f20b7))
+
 # [1.1.0](https://github.com/angristan/codex-wakatime/compare/v1.0.1...v1.1.0) (2025-12-23)
 
 
