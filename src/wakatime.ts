@@ -1,11 +1,19 @@
-import { type ExecFileOptions, execFile } from "node:child_process";
+import {
+  type ExecFileOptions,
+  execFile,
+  execFileSync,
+} from "node:child_process";
+import * as fs from "node:fs";
 import * as os from "node:os";
+import * as path from "node:path";
 import pkg from "../package.json" with { type: "json" };
 import { dependencies } from "./dependencies.js";
 import { logger } from "./logger.js";
+import { anonymizeHeartbeat } from "./privacy.js";
 import type { HeartbeatParams } from "./types.js";
 
 const VERSION = pkg.version;
+const cliFeatureCache = new Map<string, boolean>();
 
 export function isWindows(): boolean {
   return os.platform() === "win32";
@@ -45,7 +53,54 @@ export async function ensureCliInstalled(): Promise<boolean> {
   }
 }
 
+export function supportsSyncAiDisabled(cliLocation: string): boolean {
+  const cached = cliFeatureCache.get(cliLocation);
+  if (cached !== undefined) {
+    return cached;
+  }
+
+  try {
+    const output = execFileSync(cliLocation, ["--help"], {
+      ...buildExecOptions(),
+      encoding: "utf-8",
+    });
+    const supported = output.includes("--sync-ai-disabled");
+    cliFeatureCache.set(cliLocation, supported);
+    return supported;
+  } catch {
+    cliFeatureCache.set(cliLocation, false);
+    return false;
+  }
+}
+
+export function ensureAnonymizedFileEntity(
+  original: HeartbeatParams,
+  anonymized: HeartbeatParams,
+): void {
+  if (
+    anonymized.entityType !== "file" ||
+    anonymized.entity === original.entity ||
+    fs.existsSync(anonymized.entity)
+  ) {
+    return;
+  }
+
+  try {
+    fs.mkdirSync(path.dirname(anonymized.entity), { recursive: true });
+    fs.writeFileSync(anonymized.entity, "Codex activity placeholder.\n", {
+      flag: "wx",
+    });
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code !== "EEXIST") {
+      logger.warn(`Could not create privacy placeholder: ${anonymized.entity}`);
+    }
+  }
+}
+
 export function sendHeartbeat(params: HeartbeatParams): void {
+  const originalParams = params;
+  params = anonymizeHeartbeat(params);
+  ensureAnonymizedFileEntity(originalParams, params);
   const cliLocation = dependencies.getCliLocation();
 
   if (!dependencies.isCliInstalled()) {
@@ -63,6 +118,10 @@ export function sendHeartbeat(params: HeartbeatParams): void {
     "--plugin",
     `${params.client ?? "codex"}/1.0.0 codex-wakatime/${VERSION}`,
   ];
+
+  if (supportsSyncAiDisabled(cliLocation)) {
+    args.push("--sync-ai-disabled");
+  }
 
   if (params.projectFolder) {
     args.push("--project-folder", params.projectFolder);

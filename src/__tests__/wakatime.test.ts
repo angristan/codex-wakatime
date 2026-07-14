@@ -1,3 +1,4 @@
+import * as fs from "node:fs";
 import * as os from "node:os";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -14,9 +15,8 @@ vi.mock("which", () => ({
 }));
 
 // Import after mocks
-const { buildExecOptions, formatArgs, isWindows } = await import(
-  "../wakatime.js"
-);
+const { buildExecOptions, ensureAnonymizedFileEntity, formatArgs, isWindows } =
+  await import("../wakatime.js");
 
 describe("wakatime", () => {
   beforeEach(() => {
@@ -77,6 +77,35 @@ describe("wakatime", () => {
       expect(formatArgs(['path with "quotes"'])).toBe(
         '"path with \\"quotes\\""',
       );
+    });
+  });
+
+  describe("ensureAnonymizedFileEntity", () => {
+    it("creates a missing synthetic file after privacy rewriting", () => {
+      vi.mocked(fs.existsSync).mockReturnValue(false);
+
+      ensureAnonymizedFileEntity(
+        { entity: "/private/source.ts", entityType: "file" },
+        { entity: "/private/vague_file.ts", entityType: "file" },
+      );
+
+      expect(fs.mkdirSync).toHaveBeenCalledWith("/private", {
+        recursive: true,
+      });
+      expect(fs.writeFileSync).toHaveBeenCalledWith(
+        "/private/vague_file.ts",
+        "Codex activity placeholder.\n",
+        { flag: "wx" },
+      );
+    });
+
+    it("does not touch unchanged file entities", () => {
+      ensureAnonymizedFileEntity(
+        { entity: "/project/source.ts", entityType: "file" },
+        { entity: "/project/source.ts", entityType: "file" },
+      );
+
+      expect(fs.writeFileSync).not.toHaveBeenCalled();
     });
   });
 
